@@ -13,9 +13,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
+        
+        if let vehicles = DataStorage.retrieve("vehicles.json", as: [Vehicle]?.self), vehicles != nil {
+            if let navigationViewController = UIStoryboard.init(name: "Main", bundle: .main).instantiateViewController(withIdentifier: "AuthenticatedFlow") as? UINavigationController {
+                self.window?.rootViewController = navigationViewController
+            }
+        } else {
+            if let loginViewController = UIStoryboard(name: "Main", bundle: .main).instantiateInitialViewController() as? LoginViewController {
+                loginViewController.connectApi = ConnectApi()
+                self.window?.rootViewController = loginViewController
+            }
+        }
+        
         return true
     }
 
